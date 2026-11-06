@@ -16,8 +16,6 @@ using namespace std;
 // Part 5 - Queue (Student Service Queue)
 // Part 6 - Recursion
 
-
-
 // STUDENT STRUCTURE
 
 struct Student
@@ -37,298 +35,8 @@ struct Node
     Node* next;
 };
 
-
-// GLOBAL VARIABLES
-
-Node* head = nullptr;
-
-
-// UTILITY FUNCTIONS
-
-void clearInput()
-{
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-}
-
-
-// Removes spaces and tabs from the start and end of a string
-string trimSpaces(const string& text)
-{
-    size_t first = text.find_first_not_of(" \t");
-
-    if (first == string::npos)
-    {
-        return "";
-    }
-
-    size_t last = text.find_last_not_of(" \t");
-
-    return text.substr(first, last - first + 1);
-}
-
-
-// Capitalizes the first letter of every word, lowercases the rest
-// Example: "juan DELA" -> "Juan Dela"
-string capitalizeName(string name)
-{
-    bool startOfWord = true;
-
-    for (size_t i = 0; i < name.size(); i++)
-    {
-        unsigned char c = static_cast<unsigned char>(name[i]);
-
-        if (c == ' ')
-        {
-            startOfWord = true;
-        }
-        else if (startOfWord)
-        {
-            name[i] = static_cast<char>(toupper(c));
-            startOfWord = false;
-        }
-        else
-        {
-            name[i] = static_cast<char>(tolower(c));
-        }
-    }
-
-    return name;
-}
-
-
-// Reads a name (a full line). The first letter is capitalized
-// automatically. If allowMultipleWords is false, only one word
-// is accepted (used for the last name).
-string readName(const string& prompt, bool allowMultipleWords)
-{
-    string name;
-
-    while (true)
-    {
-        cout << prompt;
-
-        // Skip the newline left behind by an earlier cin >> input
-        if (cin.peek() == '\n')
-        {
-            cin.ignore();
-        }
-
-        getline(cin, name);
-
-        name = trimSpaces(name);
-
-        if (name.empty())
-        {
-            cout << "Name cannot be empty.\n";
-            continue;
-        }
-
-        if (!allowMultipleWords &&
-            name.find(' ') != string::npos)
-        {
-            cout << "Last name must be one word.\n";
-            continue;
-        }
-
-        return capitalizeName(name);
-    }
-}
-
-
-// Reads a Student ID: positive number, maximum 8 digits
-int readStudentID()
-{
-    int ID;
-
-    while (true)
-    {
-        cout << "Enter Student ID (max 8 digits): ";
-        cin >> ID;
-
-        if (cin.fail() || ID <= 0)
-        {
-            cout << "Invalid input. Enter a positive number.\n";
-            clearInput();
-            continue;
-        }
-
-        // Count the digits of ID
-        int length = 0;
-
-        for (int temp = ID; temp > 0; temp /= 10)
-        {
-            length++;
-        }
-
-        if (length > 8 || length < 8)
-        {
-            cout << "Exceeds the number limit (8 digits) or Not enough. Try again.\n";
-            continue;
-        }
-
-        return ID;
-    }
-}
-
-
-// Reads a GPA from 1.00 to 5.00
-float readGPA(const string& prompt)
-{
-    float gpa;
-
-    cout << prompt;
-
-    while (!(cin >> gpa) ||
-           gpa < 1.0 ||
-           gpa > 5.0)
-    {
-        cout << "Invalid GPA. Enter a value from 1.00 to 5.00: ";
-        clearInput();
-    }
-
-    return gpa;
-}
-
-
-// DISPLAY STUDENT
-
-void displayStudent(const Student& student)
-{
-    cout << left
-         << setw(10) << student.id
-         << setw(18) << student.firstName
-         << setw(18) << student.lastName
-         << fixed << setprecision(2)
-         << student.gpa << endl;
-}
-
-
-// Prints the table column headings and separator line
-void displayTableHeader()
-{
-    cout << left
-         << setw(10) << "ID"
-         << setw(18) << "First Name"
-         << setw(18) << "Last Name"
-         << "GPA\n";
-
-    cout << "----------------------------------------\n";
-}
-
-
 // PART 4 - STACK CLASS (RECENTLY DELETED STUDENTS)
 // Kept as-is: Delete Student (option 5) depends on this class.
-
-class StudentStack
-{
-private:
-    struct StackNode
-    {
-        Student data;
-        StackNode* next;
-    };
-
-    StackNode* top;
-
-public:
-    StudentStack() : top(nullptr) {}
-
-    ~StudentStack()
-    {
-        clear();
-    }
-
-    StudentStack(const StudentStack&) = delete;
-    StudentStack& operator=(const StudentStack&) = delete;
-
-    void push(const Student& student)
-    {
-        StackNode* newNode = new StackNode;
-
-        newNode->data = student;
-
-        newNode->next = top;
-
-        top = newNode;
-    }
-
-    Student pop()
-    {
-        Student emptyStudent = {-1, "", "", 0};
-
-        if (top == nullptr)
-        {
-            cout << "Stack is empty.\n";
-            return emptyStudent;
-        }
-
-        StackNode* temp = top;
-
-        Student student = temp->data;
-
-        top = top->next;
-
-        delete temp;
-
-        return student;
-    }
-
-    Student peek() const
-    {
-        Student emptyStudent = {-1, "", "", 0};
-
-        if (top == nullptr)
-        {
-            cout << "Stack is empty.\n";
-            return emptyStudent;
-        }
-
-        return top->data;
-    }
-
-    void displayStack() const
-    {
-        cout << "\nSTACK:\n";
-
-        if (top == nullptr)
-        {
-            cout << "Stack is empty.\n";
-            return;
-        }
-
-        StackNode* current = top;
-
-        cout << "Top\n";
-        cout << " |\n";
-        cout << " v\n";
-
-        while (current != nullptr)
-        {
-            cout << current->data.id
-                 << " "
-                 << current->data.firstName << " "
-                 << current->data.lastName
-                 << endl;
-
-            current = current->next;
-        }
-    }
-
-    void clear()
-    {
-        while (top != nullptr)
-        {
-            StackNode* temp = top;
-
-            top = top->next;
-
-            delete temp;
-        }
-    }
-};
-
-
 // PART 5 - QUEUE CLASS (STUDENT SERVICE QUEUE)
 
 class StudentQueue
@@ -461,13 +169,485 @@ public:
 };
 
 
+class StudentStack
+{
+private:
+    struct StackNode
+    {
+        Student data;
+        StackNode* next;
+    };
+
+    StackNode* top;
+
+public:
+    StudentStack() : top(nullptr) {}
+
+    ~StudentStack()
+    {
+        clear();
+    }
+
+    StudentStack(const StudentStack&) = delete;
+    StudentStack& operator=(const StudentStack&) = delete;
+
+    void push(const Student& student)
+    {
+        StackNode* newNode = new StackNode;
+
+        newNode->data = student;
+
+        newNode->next = top;
+
+        top = newNode;
+    }
+
+    Student pop()
+    {
+        Student emptyStudent = {-1, "", "", 0};
+
+        if (top == nullptr)
+        {
+            cout << "Stack is empty.\n";
+            return emptyStudent;
+        }
+
+        StackNode* temp = top;
+
+        Student student = temp->data;
+
+        top = top->next;
+
+        delete temp;
+
+        return student;
+    }
+
+    Student peek() const
+    {
+        Student emptyStudent = {-1, "", "", 0};
+
+        if (top == nullptr)
+        {
+            cout << "Stack is empty.\n";
+            return emptyStudent;
+        }
+
+        return top->data;
+    }
+
+    void displayStack() const
+    {
+        cout << "\nSTACK:\n";
+
+        if (top == nullptr)
+        {
+            cout << "Stack is empty.\n";
+            return;
+        }
+
+        StackNode* current = top;
+
+        cout << "Top\n";
+        cout << " |\n";
+        cout << " v\n";
+
+        while (current != nullptr)
+        {
+            cout << current->data.id
+                 << " "
+                 << current->data.firstName << " "
+                 << current->data.lastName
+                 << endl;
+
+            current = current->next;
+        }
+    }
+
+    void clear()
+    {
+        while (top != nullptr)
+        {
+            StackNode* temp = top;
+
+            top = top->next;
+
+            delete temp;
+        }
+    }
+};
+
+// GLOBAL VARIABLES
 // Objects of the two classes
+
+Node* head = nullptr;
 StudentStack deletedStack;
 StudentQueue serviceQueue;
 
+// MAIN
 
-// PART 1 - STUDENT RECORDS
+void mainMenu();
+void deleteAllStudents(Node*& head);
+void clearInput();
+void addStudent(Node*& head);
+void displayStudents(Node* head);
+void searchStudent(Node* head);
+void updateStudent(Node* head);
+void deleteStudent(Node*& head);
+void sortStudents(Node* head);
+void stackOperations();
+void queueOperations();
+void studentStatistics(Node* head);
 
+int main()
+{
+    mainMenu();
+
+    // Free dynamically allocated memory
+    deleteAllStudents(head);
+
+    cout << "\nProgram terminated safely.\n";
+
+    return 0;
+}
+
+// MAIN MENU
+
+void mainMenu()
+{
+    int choice = 0;
+
+    do
+    {
+        cout << "\n\n";
+        cout << "========================================\n";
+        cout << "     STUDENT RECORD MANAGEMENT SYSTEM\n";
+        cout << "========================================\n";
+        cout << "Welcome!\n";
+
+        cout << "1. Add Student\n";
+        cout << "2. Display All Students\n";
+        cout << "3. Search Student\n";
+        cout << "4. Update Student\n";
+        cout << "5. Delete Student\n";
+        cout << "6. Sort Students\n";
+        cout << "7. Stack Operations\n";
+        cout << "8. Queue Operations\n";
+        cout << "9. Student Statistics\n";
+        cout << "10. Exit\n";
+
+        cout << "========================================\n";
+
+        cout << "Enter your choice: ";
+
+        if (!(cin >> choice)) //when the receiving input fails
+        {
+            clearInput();
+            choice = 0;
+        }
+
+        switch (choice)
+        {
+            case 1:
+                addStudent(head);
+                break;
+
+            case 2:
+                displayStudents(head);
+                break;
+
+            case 3:
+                searchStudent(head);
+                break;
+
+            case 4:
+                updateStudent(head);
+                break;
+
+            case 5:
+                deleteStudent(head);
+                break;
+
+            case 6:
+                sortStudents(head);
+                break;
+
+            case 7:
+                stackOperations();
+                break;
+
+            case 8:
+                queueOperations();
+                break;
+
+            case 9:
+                studentStatistics(head);
+                break;
+
+            case 10:
+                cout << "\nExiting program...\n";
+                break;
+
+            default:
+                cout << "\nInvalid choice. Please try again.\n";
+        }
+
+    } while (choice != 10);
+}
+
+// CLEANUP FUNCTION
+
+void deleteAllStudents(Node*& head)
+{
+    while (head != nullptr)
+    {
+        Node* temp = head;
+
+        head = head->next;
+
+        delete temp;
+    }
+}
+
+// UTILITY FUNCTIONS
+
+void clearInput()
+{
+    cin.clear(); //resets the failure state
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); //discards the invalid input
+}
+
+// Reads a Student ID: positive number, maximum 8 digits
+int readStudentID()
+{
+    int ID;
+
+    while (true)
+    {
+        cout << "Enter Student ID (max 8 digits): ";
+        cin >> ID;
+
+        if (cin.fail() || ID <= 0)
+        {
+            cout << "Invalid input. Enter a positive number.\n";
+            clearInput();
+            continue;
+        }
+
+        // Count the digits of ID
+        int length = 0;
+
+        for (int temp = ID; temp > 0; temp /= 10)
+        {
+            length++;
+        }
+
+        if (length > 8 || length < 8)
+        {
+            cout << "Exceeds the number limit (8 digits) or Not enough. Try again.\n";
+            continue;
+        }
+
+        return ID;
+    }
+}
+// Capitalizes the first letter of every word, lowercases the rest
+// Example: "juan DELA" -> "Juan Dela"
+string capitalizeName(string name)
+{
+    bool startOfWord = true;
+
+    for (size_t i = 0; i < name.size(); i++)
+    {
+        unsigned char c = static_cast<unsigned char>(name[i]);
+
+        if (c == ' ')
+        {
+            startOfWord = true;
+        }
+        else if (startOfWord)
+        {
+            name[i] = static_cast<char>(toupper(c));
+            startOfWord = false;
+        }
+        else
+        {
+            name[i] = static_cast<char>(tolower(c));
+        }
+    }
+
+    return name;
+}
+
+// Removes spaces and tabs from the start and end of a string
+string trimSpaces(const string& text)
+{
+    size_t first = text.find_first_not_of(" \t");
+
+    if (first == string::npos)
+    {
+        return "";
+    }
+
+    size_t last = text.find_last_not_of(" \t");
+
+    return text.substr(first, last - first + 1);
+}
+
+// Prints the table column headings and separator line
+void displayTableHeader()
+{
+    cout << left
+         << setw(10) << "ID"
+         << setw(18) << "First Name"
+         << setw(18) << "Last Name"
+         << "GPA\n";
+
+    cout << "----------------------------------------\n";
+}
+
+
+// Reads a name (a full line). The first letter is capitalized
+// automatically. If allowMultipleWords is false, only one word
+// is accepted (used for the last name).
+string readName(const string& prompt, bool allowMultipleWords)
+{
+    string name;
+
+    while (true)
+    {
+        cout << prompt;
+
+        // Skip the newline left behind by an earlier cin >> input
+        if (cin.peek() == '\n')
+        {
+            cin.ignore();
+        }
+
+        getline(cin, name);
+
+        name = trimSpaces(name);
+
+        if (name.empty())
+        {
+            cout << "Name cannot be empty.\n";
+            continue;
+        }
+
+        if (!allowMultipleWords &&
+            name.find(' ') != string::npos)
+        {
+            cout << "Last name must be one word.\n";
+            continue;
+        }
+
+        return capitalizeName(name);
+    }
+}
+
+
+// Reads a GPA from 1.00 to 5.00
+float readGPA(const string& prompt)
+{
+    float gpa;
+
+    cout << prompt;
+
+    while (!(cin >> gpa) ||
+           gpa < 1.0 ||
+           gpa > 5.0)
+    {
+        cout << "Invalid GPA. Enter a value from 1.00 to 5.00: ";
+        clearInput();
+    }
+
+    return gpa;
+}
+
+// BINARY SEARCH
+Node* binarySearch(Node* head, int id)
+{
+    if (head == nullptr)
+    {
+        return nullptr;
+    }
+
+    // Count students
+    int size = 0;
+    Node* current = head;
+
+    while (current != nullptr)
+    {
+        size++;
+        current = current->next;
+    }
+
+    // Copy the node pointers into a temporary array
+    Node** nodes = new Node*[size];
+
+    current = head;
+
+    for (int i = 0; i < size; i++)
+    {
+        nodes[i] = current;
+        current = current->next;
+    }
+
+    // Sort the pointers by ID (insertion sort)
+    for (int i = 1; i < size; i++)
+    {
+        Node* key = nodes[i];
+        int j = i - 1;
+
+        while (j >= 0 && nodes[j]->data.id > key->data.id)
+        {
+            nodes[j + 1] = nodes[j];
+            j--;
+        }
+
+        nodes[j + 1] = key;
+    }
+
+    // Binary search
+    int low = 0;
+    int high = size - 1;
+    Node* result = nullptr;
+
+    while (low <= high)
+    {
+        int middle = low + (high - low) / 2;
+
+        if (nodes[middle]->data.id == id)
+        {
+            result = nodes[middle];
+            break;
+        }
+        else if (nodes[middle]->data.id < id)
+        {
+            low = middle + 1;
+        }
+        else
+        {
+            high = middle - 1;
+        }
+    }
+
+    delete[] nodes;
+
+    return result;
+}
+
+// DISPLAY STUDENT
+
+void displayStudent(const Student& student)
+{
+    cout << left
+         << setw(10) << student.id
+         << setw(18) << student.firstName
+         << setw(18) << student.lastName
+         << fixed << setprecision(2)
+         << student.gpa << endl;
+}
 
 // ADD STUDENT
 
@@ -551,7 +731,6 @@ void addStudent(Node*& head)
     }
 }
 
-
 // DISPLAY ALL STUDENTS
 
 void displayStudents(Node* head)
@@ -588,98 +767,6 @@ void displayStudents(Node* head)
     }
 }
 
-
-// PART 2 - SEARCHING
-
-
-// LINEAR SEARCH
-// Checks the nodes one by one from the head until the ID is
-// found. Works on unsorted data. Time: O(n).
-
-Node* linearSearch(Node* head, int id)
-{
-    // TODO: write your code here
-
-    return nullptr;
-}
-
-
-// BINARY SEARCH
-
-
-Node* binarySearch(Node* head, int id)
-{
-    if (head == nullptr)
-    {
-        return nullptr;
-    }
-
-    // Count students
-    int size = 0;
-    Node* current = head;
-
-    while (current != nullptr)
-    {
-        size++;
-        current = current->next;
-    }
-
-    // Copy the node pointers into a temporary array
-    Node** nodes = new Node*[size];
-
-    current = head;
-
-    for (int i = 0; i < size; i++)
-    {
-        nodes[i] = current;
-        current = current->next;
-    }
-
-    // Sort the pointers by ID (insertion sort)
-    for (int i = 1; i < size; i++)
-    {
-        Node* key = nodes[i];
-        int j = i - 1;
-
-        while (j >= 0 && nodes[j]->data.id > key->data.id)
-        {
-            nodes[j + 1] = nodes[j];
-            j--;
-        }
-
-        nodes[j + 1] = key;
-    }
-
-    // Binary search
-    int low = 0;
-    int high = size - 1;
-    Node* result = nullptr;
-
-    while (low <= high)
-    {
-        int middle = low + (high - low) / 2;
-
-        if (nodes[middle]->data.id == id)
-        {
-            result = nodes[middle];
-            break;
-        }
-        else if (nodes[middle]->data.id < id)
-        {
-            low = middle + 1;
-        }
-        else
-        {
-            high = middle - 1;
-        }
-    }
-
-    delete[] nodes;
-
-    return result;
-}
-
-
 // SEARCH STUDENT
 
 void searchStudent(Node* head)
@@ -693,7 +780,6 @@ void searchStudent(Node* head)
     //  ask for the Student ID, call linearSearch() or
     //  binarySearch(), then display the result)
 }
-
 
 // UPDATE STUDENT
 
@@ -736,7 +822,6 @@ void updateStudent(Node* head)
 
     cout << "\nStudent updated successfully!\n";
 }
-
 
 // DELETE STUDENT
 
@@ -807,6 +892,23 @@ void deleteStudent(Node*& head)
     deletedStack.displayStack();
 }
 
+// SORT STUDENTS
+// Student ID and GPA use Insertion Sort.
+// Last Name uses Selection Sort.
+
+void sortStudents(Node* head)
+{
+    cout << "\n========================================\n";
+    cout << "             SORT STUDENTS\n";
+    cout << "========================================\n";
+
+    // TODO: write your code here
+    // (ask what to sort by: 1 = ID, 2 = Last Name, 3 = GPA,
+    //  build the array with createStudentArray(),
+    //  sort it with insertionSort() or selectionSort(),
+    //  display it with displayArray(),
+    //  then copy it back with updateLinkedListFromArray())
+}
 
 // STACK MENU
 
@@ -863,9 +965,112 @@ void stackOperations()
     } while (choice != 5);
 }
 
+// QUEUE MENU
+
+void queueOperations()
+{
+    int choice = 0;
+
+    do
+    {
+        cout << "\n========================================\n";
+        cout << "             QUEUE OPERATIONS\n";
+        cout << "========================================\n";
+
+        cout << "1. Enqueue Student\n";
+        cout << "2. Dequeue Student\n";
+        cout << "3. Peek / View Front\n";
+        cout << "4. Display Queue\n";
+        cout << "5. Back to Main Menu\n";
+
+        cout << "Enter choice: ";
+
+        if (!(cin >> choice))
+        {
+            clearInput();
+            choice = 0;
+        }
+
+        switch (choice)
+        {
+            case 1:
+                // TODO: write your code here (enqueue)
+                break;
+
+            case 2:
+                // TODO: write your code here (dequeue)
+                break;
+
+            case 3:
+                // TODO: write your code here (peek)
+                break;
+
+            case 4:
+                // TODO: write your code here (display queue)
+                break;
+
+            case 5:
+                cout << "Returning to main menu...\n";
+                break;
+
+            default:
+                cout << "Invalid choice.\n";
+        }
+
+    } while (choice != 5);
+}
+
+// STUDENT STATISTICS
+
+void studentStatistics(Node* head)
+{
+    cout << "\n========================================\n";
+    cout << "          STUDENT STATISTICS\n";
+    cout << "========================================\n";
+
+    // TODO: write your code here
+    // (use countStudents() and calculateGPASum() to get the
+    //  total and average GPA, then find the highest and lowest
+    //  GPA and display everything)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// PART 1 - STUDENT RECORDS
+
+
+
+
+
+// PART 2 - SEARCHING
+
+
+// LINEAR SEARCH
+// Checks the nodes one by one from the head until the ID is
+// found. Works on unsorted data. Time: O(n).
+
+Node* linearSearch(Node* head, int id)
+{
+    // TODO: write your code here
+
+    return nullptr;
+}
+
 
 // PART 3 - SORTING
-
 
 // COUNT STUDENTS ITERATIVELY
 
@@ -938,79 +1143,8 @@ void updateLinkedListFromArray(Node* head,
 }
 
 
-// SORT STUDENTS
-// Student ID and GPA use Insertion Sort.
-// Last Name uses Selection Sort.
-
-void sortStudents(Node* head)
-{
-    cout << "\n========================================\n";
-    cout << "             SORT STUDENTS\n";
-    cout << "========================================\n";
-
-    // TODO: write your code here
-    // (ask what to sort by: 1 = ID, 2 = Last Name, 3 = GPA,
-    //  build the array with createStudentArray(),
-    //  sort it with insertionSort() or selectionSort(),
-    //  display it with displayArray(),
-    //  then copy it back with updateLinkedListFromArray())
-}
 
 
-// QUEUE MENU
-
-void queueOperations()
-{
-    int choice = 0;
-
-    do
-    {
-        cout << "\n========================================\n";
-        cout << "             QUEUE OPERATIONS\n";
-        cout << "========================================\n";
-
-        cout << "1. Enqueue Student\n";
-        cout << "2. Dequeue Student\n";
-        cout << "3. Peek / View Front\n";
-        cout << "4. Display Queue\n";
-        cout << "5. Back to Main Menu\n";
-
-        cout << "Enter choice: ";
-
-        if (!(cin >> choice))
-        {
-            clearInput();
-            choice = 0;
-        }
-
-        switch (choice)
-        {
-            case 1:
-                // TODO: write your code here (enqueue)
-                break;
-
-            case 2:
-                // TODO: write your code here (dequeue)
-                break;
-
-            case 3:
-                // TODO: write your code here (peek)
-                break;
-
-            case 4:
-                // TODO: write your code here (display queue)
-                break;
-
-            case 5:
-                cout << "Returning to main menu...\n";
-                break;
-
-            default:
-                cout << "Invalid choice.\n";
-        }
-
-    } while (choice != 5);
-}
 
 
 // PART 6 - RECURSION
@@ -1030,145 +1164,6 @@ int countStudents(Node* head)
 float calculateGPASum(Node* head)
 {
     // TODO: write your code here
-
-    return 0;
-}
-
-
-// STUDENT STATISTICS
-
-void studentStatistics(Node* head)
-{
-    cout << "\n========================================\n";
-    cout << "          STUDENT STATISTICS\n";
-    cout << "========================================\n";
-
-    // TODO: write your code here
-    // (use countStudents() and calculateGPASum() to get the
-    //  total and average GPA, then find the highest and lowest
-    //  GPA and display everything)
-}
-
-
-// CLEANUP FUNCTION
-
-void deleteAllStudents(Node*& head)
-{
-    while (head != nullptr)
-    {
-        Node* temp = head;
-
-        head = head->next;
-
-        delete temp;
-    }
-}
-
-
-// MAIN MENU
-
-void mainMenu()
-{
-    int choice = 0;
-
-    do
-    {
-        cout << "\n\n";
-        cout << "========================================\n";
-        cout << "     STUDENT RECORD MANAGEMENT SYSTEM\n";
-        cout << "========================================\n";
-
-        cout << "1. Add Student\n";
-        cout << "2. Display All Students\n";
-        cout << "3. Search Student\n";
-        cout << "4. Update Student\n";
-        cout << "5. Delete Student\n";
-        cout << "6. Sort Students\n";
-        cout << "7. Stack Operations\n";
-        cout << "8. Queue Operations\n";
-        cout << "9. Student Statistics\n";
-        cout << "10. Exit\n";
-
-        cout << "========================================\n";
-
-        cout << "Enter your choice: ";
-
-        if (!(cin >> choice))
-        {
-            clearInput();
-            choice = 0;
-        }
-
-        switch (choice)
-        {
-            case 1:
-                addStudent(head);
-                break;
-
-            case 2:
-                displayStudents(head);
-                break;
-
-            case 3:
-                searchStudent(head);
-                break;
-
-            case 4:
-                updateStudent(head);
-                break;
-
-            case 5:
-                deleteStudent(head);
-                break;
-
-            case 6:
-                sortStudents(head);
-                break;
-
-            case 7:
-                stackOperations();
-                break;
-
-            case 8:
-                queueOperations();
-                break;
-
-            case 9:
-                studentStatistics(head);
-                break;
-
-            case 10:
-                cout << "\nExiting program...\n";
-                break;
-
-            default:
-                cout << "\nInvalid choice. Please try again.\n";
-        }
-
-    } while (choice != 10);
-}
-
-
-// MAIN
-
-int main()
-{
-    cout << "========================================\n";
-    cout << "     STUDENT RECORD MANAGEMENT SYSTEM\n";
-    cout << "========================================\n";
-
-    cout << "Welcome!\n";
-
-    mainMenu();
-
-    // Free dynamically allocated memory
-    deleteAllStudents(head);
-
-    deletedStack.clear();
-
-    serviceQueue.clear();
-
-    cout << "\nProgram terminated safely.\n";
 
     return 0;
 }
