@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 // STUDENT RECORD MANAGEMENT SYSTEM
 
 // Part 1 - Student records (linked list)
@@ -26,13 +25,12 @@ struct Student
     float gpa;
 };
 
-
 // LINKED LIST NODE
 
 struct Node
 {
     Student data;
-    Node* next;
+    Node *next;
 };
 
 // PART 4 - STACK CLASS (RECENTLY DELETED STUDENTS)
@@ -45,11 +43,11 @@ private:
     struct QueueNode
     {
         Student data;
-        QueueNode* next;
+        QueueNode *next;
     };
 
-    QueueNode* front;
-    QueueNode* rear;
+    QueueNode *front;
+    QueueNode *rear;
 
 public:
     StudentQueue() : front(nullptr), rear(nullptr) {}
@@ -59,12 +57,12 @@ public:
         clear();
     }
 
-    StudentQueue(const StudentQueue&) = delete;
-    StudentQueue& operator=(const StudentQueue&) = delete;
+    StudentQueue(const StudentQueue &) = delete;
+    StudentQueue &operator=(const StudentQueue &) = delete;
 
-    void enqueue(const Student& student)
+    void enqueue(const Student &student)
     {
-        QueueNode* newNode = new QueueNode;
+        QueueNode *newNode = new QueueNode;
 
         newNode->data = student;
 
@@ -93,7 +91,7 @@ public:
             return emptyStudent;
         }
 
-        QueueNode* temp = front;
+        QueueNode *temp = front;
 
         Student student = temp->data;
 
@@ -134,7 +132,7 @@ public:
             return;
         }
 
-        QueueNode* current = front;
+        QueueNode *current = front;
 
         int position = 1;
 
@@ -157,7 +155,7 @@ public:
     {
         while (front != nullptr)
         {
-            QueueNode* temp = front;
+            QueueNode *temp = front;
 
             front = front->next;
 
@@ -168,17 +166,16 @@ public:
     }
 };
 
-
 class StudentStack
 {
 private:
     struct StackNode
     {
         Student data;
-        StackNode* next;
+        StackNode *next;
     };
 
-    StackNode* top;
+    StackNode *top;
 
 public:
     StudentStack() : top(nullptr) {}
@@ -188,12 +185,12 @@ public:
         clear();
     }
 
-    StudentStack(const StudentStack&) = delete;
-    StudentStack& operator=(const StudentStack&) = delete;
+    StudentStack(const StudentStack &) = delete;
+    StudentStack &operator=(const StudentStack &) = delete;
 
-    void push(const Student& student)
+    void push(const Student &student)
     {
-        StackNode* newNode = new StackNode;
+        StackNode *newNode = new StackNode;
 
         newNode->data = student;
 
@@ -212,7 +209,7 @@ public:
             return emptyStudent;
         }
 
-        StackNode* temp = top;
+        StackNode *temp = top;
 
         Student student = temp->data;
 
@@ -246,7 +243,7 @@ public:
             return;
         }
 
-        StackNode* current = top;
+        StackNode *current = top;
 
         cout << "Top\n";
         cout << " |\n";
@@ -268,7 +265,7 @@ public:
     {
         while (top != nullptr)
         {
-            StackNode* temp = top;
+            StackNode *temp = top;
 
             top = top->next;
 
@@ -280,24 +277,24 @@ public:
 // GLOBAL VARIABLES
 // Objects of the two classes
 
-Node* head = nullptr;
+Node *head = nullptr;
 StudentStack deletedStack;
 StudentQueue serviceQueue;
 
 // MAIN
 
 void mainMenu();
-void deleteAllStudents(Node*& head);
+void deleteAllStudents(Node *&head);
 void clearInput();
-void addStudent(Node*& head);
-void displayStudents(Node* head);
-void searchStudent(Node* head);
-void updateStudent(Node* head);
-void deleteStudent(Node*& head);
-void sortStudents(Node* head);
+void addStudent(Node *&head);
+void displayStudents(Node *head);
+void searchStudent(Node *head);
+void updateStudent(Node *head);
+void deleteStudent(Node *&head);
+void sortStudents(Node *head);
 void stackOperations();
 void queueOperations();
-void studentStatistics(Node* head);
+void studentStatistics(Node *head);
 
 int main()
 {
@@ -340,7 +337,7 @@ void mainMenu()
 
         cout << "Enter your choice: ";
 
-        if (!(cin >> choice)) //when the receiving input fails
+        if (!(cin >> choice)) // when the receiving input fails
         {
             clearInput();
             choice = 0;
@@ -348,48 +345,48 @@ void mainMenu()
 
         switch (choice)
         {
-            case 1:
-                addStudent(head);
-                break;
+        case 1:
+            addStudent(head);
+            break;
 
-            case 2:
-                displayStudents(head);
-                break;
+        case 2:
+            displayStudents(head);
+            break;
 
-            case 3:
-                searchStudent(head);
-                break;
+        case 3:
+            searchStudent(head);
+            break;
 
-            case 4:
-                updateStudent(head);
-                break;
+        case 4:
+            updateStudent(head);
+            break;
 
-            case 5:
-                deleteStudent(head);
-                break;
+        case 5:
+            deleteStudent(head);
+            break;
 
-            case 6:
-                sortStudents(head);
-                break;
+        case 6:
+            sortStudents(head);
+            break;
 
-            case 7:
-                stackOperations();
-                break;
+        case 7:
+            stackOperations();
+            break;
 
-            case 8:
-                queueOperations();
-                break;
+        case 8:
+            queueOperations();
+            break;
 
-            case 9:
-                studentStatistics(head);
-                break;
+        case 9:
+            studentStatistics(head);
+            break;
 
-            case 10:
-                cout << "\nExiting program...\n";
-                break;
+        case 10:
+            cout << "\nExiting program...\n";
+            break;
 
-            default:
-                cout << "\nInvalid choice. Please try again.\n";
+        default:
+            cout << "\nInvalid choice. Please try again.\n";
         }
 
     } while (choice != 10);
@@ -397,11 +394,11 @@ void mainMenu()
 
 // CLEANUP FUNCTION
 
-void deleteAllStudents(Node*& head)
+void deleteAllStudents(Node *&head)
 {
     while (head != nullptr)
     {
-        Node* temp = head;
+        Node *temp = head;
 
         head = head->next;
 
@@ -413,8 +410,8 @@ void deleteAllStudents(Node*& head)
 
 void clearInput()
 {
-    cin.clear(); //resets the failure state
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); //discards the invalid input
+    cin.clear();                                         // resets the failure state
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discards the invalid input
 }
 
 // Reads a Student ID: positive number, maximum 8 digits
@@ -442,7 +439,7 @@ int readStudentID()
             length++;
         }
 
-        if (length > 8 || length < 8)
+        if (length != 8)
         {
             cout << "Exceeds the number limit (8 digits) or Not enough. Try again.\n";
             continue;
@@ -480,7 +477,7 @@ string capitalizeName(string name)
 }
 
 // Removes spaces and tabs from the start and end of a string
-string trimSpaces(const string& text)
+string trimSpaces(const string &text)
 {
     size_t first = text.find_first_not_of(" \t");
 
@@ -506,11 +503,10 @@ void displayTableHeader()
     cout << "----------------------------------------\n";
 }
 
-
 // Reads a name (a full line). The first letter is capitalized
 // automatically. If allowMultipleWords is false, only one word
 // is accepted (used for the last name).
-string readName(const string& prompt, bool allowMultipleWords)
+string readName(const string &prompt, bool allowMultipleWords)
 {
     string name;
 
@@ -545,9 +541,8 @@ string readName(const string& prompt, bool allowMultipleWords)
     }
 }
 
-
 // Reads a GPA from 1.00 to 5.00
-float readGPA(const string& prompt)
+float readGPA(const string &prompt)
 {
     float gpa;
 
@@ -565,7 +560,7 @@ float readGPA(const string& prompt)
 }
 
 // BINARY SEARCH
-Node* binarySearch(Node* head, int id)
+Node *binarySearch(Node *head, int id)
 {
     if (head == nullptr)
     {
@@ -574,7 +569,7 @@ Node* binarySearch(Node* head, int id)
 
     // Count students
     int size = 0;
-    Node* current = head;
+    Node *current = head;
 
     while (current != nullptr)
     {
@@ -583,7 +578,7 @@ Node* binarySearch(Node* head, int id)
     }
 
     // Copy the node pointers into a temporary array
-    Node** nodes = new Node*[size];
+    Node **nodes = new Node *[size];
 
     current = head;
 
@@ -596,7 +591,7 @@ Node* binarySearch(Node* head, int id)
     // Sort the pointers by ID (insertion sort)
     for (int i = 1; i < size; i++)
     {
-        Node* key = nodes[i];
+        Node *key = nodes[i];
         int j = i - 1;
 
         while (j >= 0 && nodes[j]->data.id > key->data.id)
@@ -611,7 +606,7 @@ Node* binarySearch(Node* head, int id)
     // Binary search
     int low = 0;
     int high = size - 1;
-    Node* result = nullptr;
+    Node *result = nullptr;
 
     while (low <= high)
     {
@@ -639,7 +634,7 @@ Node* binarySearch(Node* head, int id)
 
 // DISPLAY STUDENT
 
-void displayStudent(const Student& student)
+void displayStudent(const Student &student)
 {
     cout << left
          << setw(10) << student.id
@@ -651,7 +646,7 @@ void displayStudent(const Student& student)
 
 // ADD STUDENT
 
-void addStudent(Node*& head)
+void addStudent(Node *&head)
 {
     Student student;
 
@@ -662,7 +657,7 @@ void addStudent(Node*& head)
     student.id = readStudentID();
 
     // Check if ID already exists
-    Node* check = head;
+    Node *check = head;
 
     while (check != nullptr)
     {
@@ -682,7 +677,7 @@ void addStudent(Node*& head)
     student.gpa = readGPA("Enter GPA (1.00 - 5.00): ");
 
     // Create a new node dynamically
-    Node* newNode = new Node;
+    Node *newNode = new Node;
 
     newNode->data = student;
     newNode->next = nullptr;
@@ -694,7 +689,7 @@ void addStudent(Node*& head)
     }
     else
     {
-        Node* current = head;
+        Node *current = head;
 
         while (current->next != nullptr)
         {
@@ -707,33 +702,32 @@ void addStudent(Node*& head)
     cout << "\nStudent added successfully!\n";
 
     // Input 1 to go back to the Main Menu
-    int menuChoice;
-
-    cout << "\nInput 1 to add new Student. ";
-    cout << "\nInput 2 to go back to the Main Menu:\n";
-    cin >> menuChoice;
-
-    switch (menuChoice)
+    int menuChoice = 0;
+    while (menuChoice != 2)
     {
-    case 1:
-        addStudent(head);
-        break;
-    case 2:
-        while (!(menuChoice) ||
-               (menuChoice != 2))
+        cout << "\nInput 1 to add new Student. ";
+        cout << "\nInput 2 to go back to the Main Menu:\n";
+        cin >> menuChoice;
+
+        switch (menuChoice)
         {
-            cout << "Invalid input";
+        case 1:
+            addStudent(head);
+            break;
+        case 2:
+
+            break;
+        default:
+            cout << "\nInvalid Input!" << endl;
             clearInput();
+            break;
         }
-        break;
-    default:
-        break;
     }
 }
 
 // DISPLAY ALL STUDENTS
 
-void displayStudents(Node* head)
+void displayStudents(Node *head)
 {
     cout << "\n========================================\n";
     cout << "           ALL STUDENTS\n";
@@ -747,7 +741,7 @@ void displayStudents(Node* head)
 
     displayTableHeader();
 
-    Node* current = head;
+    Node *current = head;
 
     while (current != nullptr)
     {
@@ -769,7 +763,7 @@ void displayStudents(Node* head)
 
 // SEARCH STUDENT
 
-void searchStudent(Node* head)
+void searchStudent(Node *head)
 {
     cout << "\n========================================\n";
     cout << "             SEARCH STUDENT\n";
@@ -783,7 +777,7 @@ void searchStudent(Node* head)
 
 // UPDATE STUDENT
 
-void updateStudent(Node* head)
+void updateStudent(Node *head)
 {
     int id;
 
@@ -800,7 +794,7 @@ void updateStudent(Node* head)
         return;
     }
 
-    Node* studentNode = binarySearch(head, id);
+    Node *studentNode = binarySearch(head, id);
 
     if (studentNode == nullptr)
     {
@@ -825,7 +819,7 @@ void updateStudent(Node* head)
 
 // DELETE STUDENT
 
-void deleteStudent(Node*& head)
+void deleteStudent(Node *&head)
 {
     int id;
 
@@ -848,8 +842,8 @@ void deleteStudent(Node*& head)
         return;
     }
 
-    Node* current = head;
-    Node* previous = nullptr;
+    Node *current = head;
+    Node *previous = nullptr;
 
     while (current != nullptr &&
            current->data.id != id)
@@ -896,7 +890,7 @@ void deleteStudent(Node*& head)
 // Student ID and GPA use Insertion Sort.
 // Last Name uses Selection Sort.
 
-void sortStudents(Node* head)
+void sortStudents(Node *head)
 {
     cout << "\n========================================\n";
     cout << "             SORT STUDENTS\n";
@@ -938,28 +932,28 @@ void stackOperations()
 
         switch (choice)
         {
-            case 1:
-                // TODO: write your code here (push)
-                break;
+        case 1:
+            // TODO: write your code here (push)
+            break;
 
-            case 2:
-                // TODO: write your code here (pop)
-                break;
+        case 2:
+            // TODO: write your code here (pop)
+            break;
 
-            case 3:
-                // TODO: write your code here (peek)
-                break;
+        case 3:
+            // TODO: write your code here (peek)
+            break;
 
-            case 4:
-                // TODO: write your code here (display stack)
-                break;
+        case 4:
+            // TODO: write your code here (display stack)
+            break;
 
-            case 5:
-                cout << "Returning to main menu...\n";
-                break;
+        case 5:
+            cout << "Returning to main menu...\n";
+            break;
 
-            default:
-                cout << "Invalid choice.\n";
+        default:
+            cout << "Invalid choice.\n";
         }
 
     } while (choice != 5);
@@ -993,28 +987,28 @@ void queueOperations()
 
         switch (choice)
         {
-            case 1:
-                // TODO: write your code here (enqueue)
-                break;
+        case 1:
+            // TODO: write your code here (enqueue)
+            break;
 
-            case 2:
-                // TODO: write your code here (dequeue)
-                break;
+        case 2:
+            // TODO: write your code here (dequeue)
+            break;
 
-            case 3:
-                // TODO: write your code here (peek)
-                break;
+        case 3:
+            // TODO: write your code here (peek)
+            break;
 
-            case 4:
-                // TODO: write your code here (display queue)
-                break;
+        case 4:
+            // TODO: write your code here (display queue)
+            break;
 
-            case 5:
-                cout << "Returning to main menu...\n";
-                break;
+        case 5:
+            cout << "Returning to main menu...\n";
+            break;
 
-            default:
-                cout << "Invalid choice.\n";
+        default:
+            cout << "Invalid choice.\n";
         }
 
     } while (choice != 5);
@@ -1022,7 +1016,7 @@ void queueOperations()
 
 // STUDENT STATISTICS
 
-void studentStatistics(Node* head)
+void studentStatistics(Node *head)
 {
     cout << "\n========================================\n";
     cout << "          STUDENT STATISTICS\n";
@@ -1034,64 +1028,41 @@ void studentStatistics(Node* head)
     //  GPA and display everything)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // PART 1 - STUDENT RECORDS
 
-
-
-
-
 // PART 2 - SEARCHING
-
 
 // LINEAR SEARCH
 // Checks the nodes one by one from the head until the ID is
 // found. Works on unsorted data. Time: O(n).
 
-Node* linearSearch(Node* head, int id)
+Node *linearSearch(Node *head, int id)
 {
     // TODO: write your code here
 
     return nullptr;
 }
 
-
 // PART 3 - SORTING
 
 // COUNT STUDENTS ITERATIVELY
 
-int getStudentCount(Node* head)
+int getStudentCount(Node *head)
 {
     // TODO: write your code here
 
     return 0;
 }
 
-
 // COPY LINKED LIST TO ARRAY
 
-Student* createStudentArray(Node* head, int& size)
+Student *createStudentArray(Node *head, int &size)
 {
     // TODO: write your code here
 
     size = 0;
     return nullptr;
 }
-
 
 // DISPLAY ARRAY
 
@@ -1100,18 +1071,16 @@ void displayArray(Student arr[], int size)
     // TODO: write your code here
 }
 
-
 // COMPARE TWO STUDENTS
 // sortChoice: 1 = ID, 2 = Last Name, 3 = GPA
 // Returns true if a must come before b
 
-bool comesBefore(const Student& a, const Student& b, int sortChoice)
+bool comesBefore(const Student &a, const Student &b, int sortChoice)
 {
     // TODO: write your code here
 
     return false;
 }
-
 
 // INSERTION SORT
 // Takes one student at a time and inserts it into its correct
@@ -1122,7 +1091,6 @@ void insertionSort(Student arr[], int size, int sortChoice)
     // TODO: write your code here
 }
 
-
 // SELECTION SORT
 // Finds the smallest remaining student and swaps it into the
 // next position.
@@ -1132,36 +1100,29 @@ void selectionSort(Student arr[], int size, int sortChoice)
     // TODO: write your code here
 }
 
-
 // UPDATE LINKED LIST FROM ARRAY
 
-void updateLinkedListFromArray(Node* head,
+void updateLinkedListFromArray(Node *head,
                                Student arr[],
                                int size)
 {
     // TODO: write your code here
 }
 
-
-
-
-
-
 // PART 6 - RECURSION
 
 // RECURSIVE COUNT FUNCTION
 
-int countStudents(Node* head)
+int countStudents(Node *head)
 {
     // TODO: write your code here
 
     return 0;
 }
 
-
 // RECURSIVE GPA SUM
 
-float calculateGPASum(Node* head)
+float calculateGPASum(Node *head)
 {
     // TODO: write your code here
 
