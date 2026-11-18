@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <limits>
 #include <cctype>
-
+#include <vector>
 using namespace std;
 
 // STUDENT RECORD MANAGEMENT SYSTEM
@@ -313,7 +313,12 @@ int main()
 void mainMenu()
 {
     int choice = 0;
-
+    Node *student1 = new Node();
+    head = student1;
+    student1->data.id = 25178236;
+    student1->data.firstName = "adsd";
+    student1->data.lastName = "adasds";
+    student1->data.gpa = 1.00;
     do
     {
         cout << "\n\n";
@@ -713,6 +718,7 @@ void addStudent(Node *&head)
         {
         case 1:
             addStudent(head);
+            return;
             break;
         case 2:
 
@@ -761,6 +767,44 @@ void displayStudents(Node *head)
     }
 }
 
+// LINEAR SEARCH
+// Checks the nodes one by one from the head until the ID is
+// found. Works on unsorted data. Time: O(n).
+
+vector<Node *> linearSearch(Node *head, int id)
+{
+    vector<Node *> results;
+
+    Node *current = head;
+    while (current != nullptr)
+    {
+        if (current->data.id == id)
+        {
+            results.push_back(current);
+        }
+        current = current->next;
+    }
+
+    return results;
+}
+
+// function overload
+vector<Node *> linearSearch(Node *head, string name)
+{
+    vector<Node *> results;
+    name = trimSpaces(name);
+    name = capitalizeName(name);
+    Node *current = head;
+    while (current != nullptr)
+    {
+        if (current->data.firstName.find(name) == 0 || current->data.lastName.find(name) == 0)
+        {
+            results.push_back(current);
+        }
+        current = current->next;
+    }
+    return results;
+}
 // SEARCH STUDENT
 
 void searchStudent(Node *head)
@@ -768,6 +812,48 @@ void searchStudent(Node *head)
     cout << "\n========================================\n";
     cout << "             SEARCH STUDENT\n";
     cout << "========================================\n";
+
+    string searchInput;
+
+    cout << "Enter GPA or Name: ";
+
+    clearInput();
+    cin >> searchInput;
+
+    bool isNumber = !searchInput.empty();
+
+    for (char c : searchInput)
+    {
+        if (!isdigit(c))
+        {
+            isNumber = false;
+            break;
+        }
+    }
+    vector<Node *> results;
+    if (isNumber)
+    {
+        int id = stoi(searchInput);
+
+        results = linearSearch(head, id);
+    }
+    else
+    {
+        string name = searchInput;
+        results = linearSearch(head, name);
+    }
+
+    if (results.empty())
+    {
+        cout << "No Students found";
+        searchStudent(head);
+        return;
+    }
+    displayTableHeader();
+    for (Node *student : results)
+    {
+        displayStudent(student->data);
+    }
 
     // TODO: write your code here
     // (ask for 1 = Linear Search / 2 = Binary Search,
@@ -1031,17 +1117,6 @@ void studentStatistics(Node *head)
 // PART 1 - STUDENT RECORDS
 
 // PART 2 - SEARCHING
-
-// LINEAR SEARCH
-// Checks the nodes one by one from the head until the ID is
-// found. Works on unsorted data. Time: O(n).
-
-Node *linearSearch(Node *head, int id)
-{
-    // TODO: write your code here
-
-    return nullptr;
-}
 
 // PART 3 - SORTING
 

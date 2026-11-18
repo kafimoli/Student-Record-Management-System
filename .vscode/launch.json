@@ -1,0 +1,16 @@
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run C++ (Restart)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${fileDirname}\\main.exe",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "preLaunchTask": "Build active file",
+            "console": "integratedTerminal"
+        }
+    ]
+}
