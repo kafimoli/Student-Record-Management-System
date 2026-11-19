@@ -314,18 +314,7 @@ int main()
 void mainMenu()
 {
     int choice = 0;
-    Node *student1 = new Node();
-    head = student1;
-    student1->data.id = 25178236;
-    student1->data.firstName = "Kylon";
-    student1->data.lastName = "Loresca";
-    student1->data.gpa = 1.00;
-    Node *student2 = new Node();
-    student1->next = student2;
-    student2->data.id = 25179277;
-    student2->data.firstName = "Jennifer";
-    student2->data.lastName = "Cardano";
-    student2->data.gpa = 1.25;
+    
     do
     {
         cout << "\n\n";
@@ -1325,14 +1314,83 @@ void queueOperations()
 };
 // STUDENT STATISTICS
 
+
 void studentStatistics(Node *head)
 {
+
+    int countStudents(Node *head);
+    
+    float calculateGPASum(Node *head);
+
+    
     cout << "\n========================================\n";
     cout << "          STUDENT STATISTICS\n";
     cout << "========================================\n";
 
-    // TODO: write your code here
-    // (use countStudents() and calculateGPASum() to get the
-    //  total and average GPA, then find the highest and lowest
-    //  GPA and display everything)
+    
+    if (head == nullptr)
+    {
+        cout << "No student records found.\n";
+        return;
+    }
+
+    int total = countStudents(head);
+    float average = calculateGPASum(head) / total;
+
+    // 1.00 best grade
+    Node *best = head;
+    Node *worst = head;
+    Node *current = head->next;
+
+    while (current != nullptr)
+    {
+        if (current->data.gpa < best->data.gpa)
+            best = current;
+
+        if (current->data.gpa > worst->data.gpa)
+            worst = current;
+
+        current = current->next;
+    }
+
+    cout << fixed << setprecision(2);
+    cout << "Total Students : " << total << endl;
+    cout << "Average GPA    : " << average << endl;
+
+    cout << "Highest GPA    : " << best->data.gpa << " - "
+         << best->data.firstName << " " << best->data.lastName << endl;
+
+    cout << "Lowest GPA     : " << worst->data.gpa << " - "
+         << worst->data.firstName << " " << worst->data.lastName << endl;
+
+    int menuChoice;
+    cout << "\nInput 1 to go back to the Main Menu: ";
+
+    while (!(cin >> menuChoice) || menuChoice != 1)
+    {
+        cout << "Invalid input. Input 1 to go back to the Main Menu: ";
+        clearInput();
+    }
+}
+
+// PART 6 - RECURSION
+
+// RECURSIVE COUNT FUNCTION
+
+int countStudents(Node *head)
+{
+    if (head == nullptr)
+        return 0;
+
+    return 1 + countStudents(head->next);
+}
+
+// RECURSIVE GPA SUM
+
+float calculateGPASum(Node *head)
+{
+    if (head == nullptr)
+        return 0;
+
+    return head->data.gpa + calculateGPASum(head->next);
 }
