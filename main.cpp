@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -316,9 +317,15 @@ void mainMenu()
     Node *student1 = new Node();
     head = student1;
     student1->data.id = 25178236;
-    student1->data.firstName = "adsd";
-    student1->data.lastName = "adasds";
+    student1->data.firstName = "Kylon";
+    student1->data.lastName = "Loresca";
     student1->data.gpa = 1.00;
+    Node *student2 = new Node();
+    student1->next = student2;
+    student2->data.id = 25179277;
+    student2->data.firstName = "Jennifer";
+    student2->data.lastName = "Cardano";
+    student2->data.gpa = 1.25;
     do
     {
         cout << "\n\n";
@@ -501,8 +508,8 @@ void displayTableHeader()
 {
     cout << left
          << setw(10) << "ID"
-         << setw(18) << "First Name"
          << setw(18) << "Last Name"
+         << setw(18) << "First Name"
          << "GPA\n";
 
     cout << "----------------------------------------\n";
@@ -643,8 +650,8 @@ void displayStudent(const Student &student)
 {
     cout << left
          << setw(10) << student.id
-         << setw(18) << student.firstName
          << setw(18) << student.lastName
+         << setw(18) << student.firstName
          << fixed << setprecision(2)
          << student.gpa << endl;
 }
@@ -719,7 +726,6 @@ void addStudent(Node *&head)
         case 1:
             addStudent(head);
             return;
-            break;
         case 2:
 
             break;
@@ -813,6 +819,11 @@ void searchStudent(Node *head)
     cout << "             SEARCH STUDENT\n";
     cout << "========================================\n";
 
+    if (head == nullptr)
+    {
+        cout << "There's no currently student records available yet.\n";
+        return;
+    }
     string searchInput;
 
     cout << "Enter GPA or Name: ";
@@ -898,7 +909,7 @@ void updateStudent(Node *head)
 
     studentNode->data.lastName = readName("Enter new Last Name: ", false);
 
-    studentNode->data.gpa = readGPA("Enter new GPA (0.00 - 5.00): ");
+    studentNode->data.gpa = readGPA("Enter new GPA (1.00 - 5.00): ");
 
     cout << "\nStudent updated successfully!\n";
 }
@@ -972,22 +983,133 @@ void deleteStudent(Node *&head)
     deletedStack.displayStack();
 }
 
+vector<Node *> createStudentArray(Node *head)
+{
+    vector<Node *> studentArray;
+
+    Node *current = head;
+    while (current != nullptr)
+    {
+        studentArray.push_back(current);
+
+        current = current->next;
+    }
+    return studentArray;
+}
+
+void bubbleSort(vector<Node *> &nodes, int desiredInfo, bool order)
+{
+    for (int i = 0; i < nodes.size() - 1; i++)
+    {
+        for (int j = 0; j < nodes.size() - 1; j++)
+        {
+            switch (desiredInfo)
+            {
+            case 1:
+                if (order ? nodes[j]->data.id < nodes[j + 1]->data.id
+                          : nodes[j]->data.id > nodes[j + 1]->data.id)
+                {
+                    swap(nodes[j], nodes[j + 1]);
+                }
+                break;
+            case 2:
+                if (order ? nodes[j]->data.lastName < nodes[j + 1]->data.lastName
+                          : nodes[j]->data.lastName > nodes[j + 1]->data.lastName)
+                {
+                    swap(nodes[j], nodes[j + 1]);
+                }
+                break;
+            case 3:
+                if (order ? nodes[j]->data.gpa < nodes[j + 1]->data.gpa
+                          : nodes[j]->data.gpa > nodes[j + 1]->data.gpa)
+                {
+                    swap(nodes[j], nodes[j + 1]);
+                }
+                break;
+            }
+        }
+    }
+}
+
 // SORT STUDENTS
 // Student ID and GPA use Insertion Sort.
 // Last Name uses Selection Sort.
 
 void sortStudents(Node *head)
 {
-    cout << "\n========================================\n";
-    cout << "             SORT STUDENTS\n";
-    cout << "========================================\n";
+    vector<Node *> studentArray = createStudentArray(head);
 
-    // TODO: write your code here
-    // (ask what to sort by: 1 = ID, 2 = Last Name, 3 = GPA,
-    //  build the array with createStudentArray(),
-    //  sort it with insertionSort() or selectionSort(),
-    //  display it with displayArray(),
-    //  then copy it back with updateLinkedListFromArray())
+    do
+    {
+        cout << "\n========================================\n";
+        cout << "             SORT STUDENTS\n";
+        cout << "========================================\n";
+
+        int input;
+        int orderInput = 1;
+        if (studentArray.empty())
+        {
+            cout << "No student records found.\n";
+            return;
+        }
+
+        displayTableHeader();
+        for (Node *student : studentArray)
+        {
+            displayStudent(student->data);
+        }
+
+        cout << "----------------------------------------\n";
+        cout << "What do you want it to sort by:" << endl;
+        cout << "1. ID" << endl;
+        cout << "2. Last Name" << endl;
+        cout << "3. GPA" << endl;
+        cout << "4. Go back to the Main Menu" << endl;
+        cout << "Input: ";
+
+        if (!(cin >> input))
+        {
+            clearInput();
+            cout << "Invalid input, please try again\n";
+            continue;
+        }
+        if (input != 4)
+        {
+            cout << "Which order do you want it: \n";
+            cout << "1. Ascending (A-Z)\n";
+            cout << "2. Descending (Z-A)\n";
+            cout << "Input:";
+
+            if (!(cin >> orderInput) || orderInput > 2 || orderInput < 1)
+            {
+                clearInput();
+                cout << "Invalid input, please try again\n";
+                continue;
+            }
+
+            
+        }
+        bool order = orderInput - 1;
+        switch (input)
+        {
+        case 1:
+            bubbleSort(studentArray, 1, order);
+            break;
+        case 2:
+            bubbleSort(studentArray, 2, order);
+            break;
+        case 3:
+            bubbleSort(studentArray, 3, order);
+            break;
+        case 4:
+            return;
+        default:
+            clearInput();
+            cout << "Invalid Input, try again.";
+            break;
+        }
+
+    } while (true);
 }
 
 // STACK MENU
@@ -1114,92 +1236,4 @@ void studentStatistics(Node *head)
     //  GPA and display everything)
 }
 
-// PART 1 - STUDENT RECORDS
 
-// PART 2 - SEARCHING
-
-// PART 3 - SORTING
-
-// COUNT STUDENTS ITERATIVELY
-
-int getStudentCount(Node *head)
-{
-    // TODO: write your code here
-
-    return 0;
-}
-
-// COPY LINKED LIST TO ARRAY
-
-Student *createStudentArray(Node *head, int &size)
-{
-    // TODO: write your code here
-
-    size = 0;
-    return nullptr;
-}
-
-// DISPLAY ARRAY
-
-void displayArray(Student arr[], int size)
-{
-    // TODO: write your code here
-}
-
-// COMPARE TWO STUDENTS
-// sortChoice: 1 = ID, 2 = Last Name, 3 = GPA
-// Returns true if a must come before b
-
-bool comesBefore(const Student &a, const Student &b, int sortChoice)
-{
-    // TODO: write your code here
-
-    return false;
-}
-
-// INSERTION SORT
-// Takes one student at a time and inserts it into its correct
-// place among the students already sorted on its left.
-
-void insertionSort(Student arr[], int size, int sortChoice)
-{
-    // TODO: write your code here
-}
-
-// SELECTION SORT
-// Finds the smallest remaining student and swaps it into the
-// next position.
-
-void selectionSort(Student arr[], int size, int sortChoice)
-{
-    // TODO: write your code here
-}
-
-// UPDATE LINKED LIST FROM ARRAY
-
-void updateLinkedListFromArray(Node *head,
-                               Student arr[],
-                               int size)
-{
-    // TODO: write your code here
-}
-
-// PART 6 - RECURSION
-
-// RECURSIVE COUNT FUNCTION
-
-int countStudents(Node *head)
-{
-    // TODO: write your code here
-
-    return 0;
-}
-
-// RECURSIVE GPA SUM
-
-float calculateGPASum(Node *head)
-{
-    // TODO: write your code here
-
-    return 0;
-}
