@@ -1086,8 +1086,6 @@ void sortStudents(Node *head)
                 cout << "Invalid input, please try again\n";
                 continue;
             }
-
-            
         }
         bool order = orderInput - 1;
         switch (input)
@@ -1118,6 +1116,10 @@ void stackOperations()
 {
     int choice = 0;
 
+    Student student;
+    Student removedStudent;
+    Student topStudent;
+
     do
     {
         cout << "\n========================================\n";
@@ -1141,19 +1143,76 @@ void stackOperations()
         switch (choice)
         {
         case 1:
-            // TODO: write your code here (push)
+            // PUSH
+
+            cout << "\nADD DELETED STUDENT\n";
+            cout << "------------------------------\n";
+
+            student.id = readStudentID();
+
+            student.firstName =
+                readName("Enter First Name: ", true);
+
+            student.lastName =
+                readName("Enter Last Name: ", false);
+
+            student.gpa =
+                readGPA("Enter GPA (1.00 - 5.00): ");
+
+            deletedStack.push(student);
+
+            cout << "\nStudent added to Deleted Stack.\n";
+
+            deletedStack.displayStack();
+
             break;
 
         case 2:
-            // TODO: write your code here (pop)
+            // POP
+
+            removedStudent = deletedStack.pop();
+
+            if (removedStudent.id != -1)
+            {
+                cout << "\nStudent removed from Deleted Stack:\n";
+
+                cout << "Student: "
+                     << removedStudent.id
+                     << " - "
+                     << removedStudent.firstName
+                     << " "
+                     << removedStudent.lastName
+                     << endl;
+            }
+
             break;
 
         case 3:
-            // TODO: write your code here (peek)
+            // PEEK
+
+            topStudent = deletedStack.peek();
+
+            if (topStudent.id != -1)
+            {
+                cout << "\nTOP STUDENT\n";
+                cout << "------------------------------\n";
+
+                cout << "Student: "
+                     << topStudent.id
+                     << " - "
+                     << topStudent.firstName
+                     << " "
+                     << topStudent.lastName
+                     << endl;
+            }
+
             break;
 
         case 4:
-            // TODO: write your code here (display stack)
+            // DISPLAY STACK
+
+            deletedStack.displayStack();
+
             break;
 
         case 5:
@@ -1197,18 +1256,61 @@ void queueOperations()
         {
         case 1:
             // TODO: write your code here (enqueue)
-            break;
+            {
+                Student student;
 
+                cout << "\nADD STUDENT TO QUEUE\n";
+
+                student.id = readStudentID();
+
+                student.firstName = readName("Enter First Name: ", true);
+
+                student.lastName = readName("Enter Last Name: ", false);
+
+                student.gpa = readGPA("Enter GPA(1.00-5.00)");
+
+                serviceQueue.enqueue(student);
+
+                cout << "\nStudent successfully added to Queue\n";
+                break;
+            }
         case 2:
             // TODO: write your code here (dequeue)
-            break;
+            {
+                Student removedStudent = serviceQueue.dequeue();
 
+                if (removedStudent.id != -1)
+                {
+
+                    cout << "Student removed from Queue:";
+
+                    displayStudent(removedStudent);
+                }
+
+                break;
+            }
         case 3:
             // TODO: write your code here (peek)
-            break;
+            {
 
+                Student frontStudent = serviceQueue.peek();
+
+                if (frontStudent.id != -1)
+                {
+
+                    cout << "STUDENT AT THE FRONT OF THE QUEUE";
+
+                    displayStudent(frontStudent);
+                }
+                break;
+            }
         case 4:
             // TODO: write your code here (display queue)
+            {
+                serviceQueue.displayQueue();
+
+                break;
+            }
             break;
 
         case 5:
@@ -1220,8 +1322,7 @@ void queueOperations()
         }
 
     } while (choice != 5);
-}
-
+};
 // STUDENT STATISTICS
 
 void studentStatistics(Node *head)
@@ -1235,5 +1336,3 @@ void studentStatistics(Node *head)
     //  total and average GPA, then find the highest and lowest
     //  GPA and display everything)
 }
-
-
